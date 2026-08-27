@@ -158,16 +158,141 @@
             <!-- Other Pages -->
 
             <section id="sales" class="page">
-                <div class="page-heading">
-                    <h2>Sales</h2>
-                    <p>Record and manage business sales.</p>
+
+    <div class="page-heading">
+        <h2>Sales</h2>
+        <p>Record and manage business sales.</p>
+    </div>
+
+    <div class="form-card">
+
+        <div class="form-header">
+            <div>
+                <h3>New Sale</h3>
+                <p>Record a new customer sale.</p>
+            </div>
+        </div>
+
+        <form id="sales-form">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label for="sale-date">Sale Date</label>
+                    <input
+                        type="datetime-local"
+                        id="sale-date"
+                        required
+                    >
                 </div>
 
-                <div class="empty-page">
-                    <h3>Sales Management</h3>
-                    <p>New Sale functionality will be built here.</p>
+                <div class="form-group">
+                    <label for="customer">Customer</label>
+                    <select id="customer" required>
+                        <option value="">Select customer</option>
+                        <option value="1">Customer 1</option>
+                    </select>
                 </div>
-            </section>
+
+                <div class="form-group">
+                    <label for="product">Product</label>
+                    <select id="product" required>
+                        <option value="">Select product</option>
+                        <option value="1">USB-C Charger</option>
+                        <option value="2">USB Cable</option>
+                        <option value="3">Phone Case</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="quantity">Quantity</label>
+                    <input
+                        type="number"
+                        id="quantity"
+                        min="1"
+                        step="0.01"
+                        placeholder="Enter quantity"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="unit-price">Unit Price (€)</label>
+                    <input
+                        type="number"
+                        id="unit-price"
+                        min="0"
+                        step="0.01"
+                        placeholder="Enter price"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="payment-method">Payment Method</label>
+                    <select id="payment-method" required>
+                        <option value="">Select method</option>
+                        <option value="CASH">Cash</option>
+                        <option value="CARD">Card</option>
+                        <option value="BANK_TRANSFER">
+                            Bank Transfer
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="payment-status">Payment Status</label>
+                    <select id="payment-status" required>
+                        <option value="">Select status</option>
+                        <option value="PAID">Paid</option>
+                        <option value="PARTIAL">Partial</option>
+                        <option value="UNPAID">Unpaid</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="amount-paid">Amount Paid (€)</label>
+                    <input
+                        type="number"
+                        id="amount-paid"
+                        min="0"
+                        step="0.01"
+                        value="0"
+                        required
+                    >
+                </div>
+
+            </div>
+
+            <div class="total-box">
+                <span>Sale Total</span>
+                <strong id="sale-total">€0.00</strong>
+            </div>
+
+            <div class="form-group">
+                <label for="sale-notes">Notes</label>
+                <textarea
+                    id="sale-notes"
+                    rows="4"
+                    placeholder="Optional notes..."
+                ></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="primary-button">
+                    Record Sale
+                </button>
+
+                <button type="reset" class="secondary-button">
+                    Clear
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
 
 
             <section id="purchases" class="page">
