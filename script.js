@@ -68,3 +68,79 @@ if (unitPriceInput) {
 
 // Calculate immediately when the page loads
 calculateSaleTotal();
+
+// ================================
+// LOAD PRODUCTS FROM DATABASE
+// ================================
+
+const productInput = document.getElementById("product");
+
+async function loadProducts() {
+
+    if (!productInput) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch("http://localhost:3000/api/products");
+        const data = await response.json();
+
+        if (!data.success) {
+            console.error("Failed to load products");
+            return;
+        }
+
+        // Clear existing products
+        productInput.innerHTML = `
+            <option value="">Select product</option>
+        `;
+
+        // Add products from MySQL
+        data.products.forEach((product) => {
+
+            const option = document.createElement("option");
+
+            option.value = product.product_id;
+
+            option.textContent =
+                `${product.product_name} - €${Number(product.selling_price).toFixed(2)}`;
+
+            option.dataset.price = product.selling_price;
+            option.dataset.cost = product.cost_price;
+
+            productInput.appendChild(option);
+        });
+
+    } catch (error) {
+
+        console.error("Error loading products:", error);
+
+    }
+}
+
+
+// ================================
+// AUTO-FILL PRODUCT PRICE
+// ================================
+
+if (productInput) {
+
+    productInput.addEventListener("change", () => {
+
+        const selectedOption =
+            productInput.options[productInput.selectedIndex];
+
+        const price = selectedOption.dataset.price || "";
+
+        if (unitPriceInput) {
+            unitPriceInput.value = price;
+        }
+
+        calculateSaleTotal();
+    });
+}
+
+
+// Load products when page loads
+loadProducts();
