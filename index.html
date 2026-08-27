@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Decision App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+
+            <div class="logo">
+                <h2>Business Decision</h2>
+                <span>APP</span>
+            </div>
+
+            <nav>
+                <button class="nav-item active" data-page="dashboard">
+                    Dashboard
+                </button>
+
+                <button class="nav-item" data-page="sales">
+                    Sales
+                </button>
+
+                <button class="nav-item" data-page="purchases">
+                    Purchases
+                </button>
+
+                <button class="nav-item" data-page="products">
+                    Products
+                </button>
+
+                <button class="nav-item" data-page="inventory">
+                    Inventory
+                </button>
+
+                <button class="nav-item" data-page="expenses">
+                    Expenses
+                </button>
+
+                <button class="nav-item" data-page="cash">
+                    Cash
+                </button>
+
+                <button class="nav-item" data-page="alerts">
+                    Alerts & Recommendations
+                </button>
+
+                <button class="nav-item" data-page="settings">
+                    Settings
+                </button>
+            </nav>
+
+        </aside>
+
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <header class="topbar">
+                <div>
+                    <h1>Business Decision App</h1>
+                    <p id="business-name">Bright Star Electronics</p>
+                </div>
+
+                <div class="user-area">
+                    <span>Business Owner</span>
+                </div>
+            </header>
+
+
+            <!-- Dashboard -->
+            <section id="dashboard" class="page active-page">
+
+                <div class="page-heading">
+                    <h2>Business Dashboard</h2>
+                    <p>Financial and operational overview</p>
+                </div>
+
+                <div class="kpi-grid">
+
+                    <div class="kpi-card">
+                        <span>Revenue</span>
+                        <strong>€370.00</strong>
+                    </div>
+
+                    <div class="kpi-card">
+                        <span>Operating Profit</span>
+                        <strong>€105.00</strong>
+                    </div>
+
+                    <div class="kpi-card">
+                        <span>Net Cash Movement</span>
+                        <strong>-€630.00</strong>
+                    </div>
+
+                    <div class="kpi-card">
+                        <span>Inventory Value</span>
+                        <strong>€600.00</strong>
+                    </div>
+
+                </div>
+
+
+                <div class="health-grid">
+
+                    <div class="health-card">
+                        <span>Business Health Score</span>
+                        <strong>80</strong>
+                    </div>
+
+                    <div class="health-card">
+                        <span>Business Health Status</span>
+                        <strong>HEALTHY WITH CASH PRESSURE</strong>
+                    </div>
+
+                </div>
+
+
+                <div class="section-card">
+                    <h3>Decision Summary</h3>
+
+                    <div class="decision-item">
+                        <strong>Cash Pressure</strong>
+                        <p>
+                            Net cash movement is negative. Management should
+                            investigate cash outflows and working capital.
+                        </p>
+                    </div>
+
+                    <div class="decision-item">
+                        <strong>Inventory</strong>
+                        <p>
+                            Inventory represents significant capital investment.
+                            Review high-stock products before making new purchases.
+                        </p>
+                    </div>
+
+                    <div class="decision-item">
+                        <strong>Product Performance</strong>
+                        <p>
+                            Review product revenue and margins to identify
+                            products requiring management attention.
+                        </p>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Other Pages -->
+
+            <section id="sales" class="page">
+                <div class="page-heading">
+                    <h2>Sales</h2>
+                    <p>Record and manage business sales.</p>
+                </div>
+
+                <div class="empty-page">
+                    <h3>Sales Management</h3>
+                    <p>New Sale functionality will be built here.</p>
+                </div>
+            </section>
+
+
+            <section id="purchases" class="page">
+                <div class="page-heading">
+                    <h2>Purchases</h2>
+                    <p>Record purchases and supplier transactions.</p>
+                </div>
+
+                <div class="empty-page">
+                    <h3>Purchase Management</h3>
+                    <p>New Purchase functionality will be built here.</p>
+                </div>
+            </section>
+
+
+            <section id="products" class="page">
+                <div class="page-heading">
+                    <h2>Products</h2>
+                    <p>Manage products and pricing.</p>
+                </div>
+
+                <div class="empty-page">
+                    <h3>Product Management</h3>
+                    <p>Add and manage business products here.</p>
+                </div>
+            </section>
+
+
+            <section id="inventory" class="page">
+                <div class="page-heading">
+                    <h2>Inventory</h2>
+                    <p>Monitor stock levels and inventory value.</p>
+                </div>
+
+                <div class="empty-page">
+                    <h3>Inventory Management</h3>
+                    <p>Inventory management functionality will be built here.</p>
+                </div>
+            </section>
+
+
+            <section id="expenses" class="page">
+                <div class="page-heading">
+                    <h2>Expenses</h2>
+                    <p>Record and monitor business expenses.</p>
+                </div>
+
+                <div class="empty-page">
+                    <h3>Expense Management</h3>
+                    <p>Expense entry functionality will be built here.</p>
+                </div>
+            </section>
+
+
+            <section id="cash" class="page">
+                <div class="page-heading">
+                    <h2>Cash</h2>
+                    <p>Monitor cash inflows and outflows.</p>
+                </div>
+
+                <div class="empty-page">
+                    <h3>Cash Management</h3>
+                    <p>Cash transaction functionality will be built here.</p>
+                </div>
+            </section>
+
+
+            <section id="alerts" class="page">
+                <div class="page-heading">
+                    <h2>Alerts & Recommendations</h2>
+                    <p>Business issues requiring attention.</p>
+                </div>
+
+                <div class="empty-page">
+                    <h3>Business Alerts</h3>
+                    <p>Automated recommendations will appear here.</p>
+                </div>
+            </section>
+
+
+            <section id="settings" class="page">
+                <div class="page-heading">
+                    <h2>Settings</h2>
+                    <p>Manage business information and preferences.</p>
+                </div>
+
+                <div class="empty-page">
+                    <h3>Business Settings</h3>
+                    <p>Business configuration will be built here.</p>
+                </div>
+            </section>
+
+        </main>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
