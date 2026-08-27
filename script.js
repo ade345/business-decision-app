@@ -29,24 +29,42 @@ navItems.forEach((item) => {
 });
 
 
+// ================================
 // SALE TOTAL CALCULATION
+// ================================
 
 const quantityInput = document.getElementById("quantity");
 const unitPriceInput = document.getElementById("unit-price");
 const saleTotal = document.getElementById("sale-total");
 
 function calculateSaleTotal() {
-    const quantity = parseFloat(quantityInput.value) || 0;
-    const unitPrice = parseFloat(unitPriceInput.value) || 0;
+
+    if (!quantityInput || !unitPriceInput || !saleTotal) {
+        return;
+    }
+
+    const quantity = Number(quantityInput.value) || 0;
+    const unitPrice = Number(unitPriceInput.value) || 0;
 
     const total = quantity * unitPrice;
 
     saleTotal.textContent = `€${total.toFixed(2)}`;
 }
 
-if (quantityInput && unitPriceInput) {
+
+// Recalculate whenever quantity changes
+if (quantityInput) {
     quantityInput.addEventListener("input", calculateSaleTotal);
-    unitPriceInput.addEventListener("input", calculateSaleTotal);
+    quantityInput.addEventListener("change", calculateSaleTotal);
 }
 
-Fix sale total calculation
+
+// Recalculate whenever unit price changes
+if (unitPriceInput) {
+    unitPriceInput.addEventListener("input", calculateSaleTotal);
+    unitPriceInput.addEventListener("change", calculateSaleTotal);
+}
+
+
+// Calculate immediately when the page loads
+calculateSaleTotal();
