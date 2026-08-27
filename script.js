@@ -279,3 +279,67 @@ if (salesForm) {
 
     });
 }
+
+// ================================
+// LOAD SALES HISTORY
+// ================================
+
+const salesHistory = document.getElementById("sales-history");
+
+async function loadSalesHistory() {
+
+    if (!salesHistory) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "http://localhost:3000/api/sales"
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+            salesHistory.innerHTML =
+                "<p>Failed to load sales.</p>";
+            return;
+        }
+
+        if (data.sales.length === 0) {
+            salesHistory.innerHTML =
+                "<p>No sales recorded yet.</p>";
+            return;
+        }
+
+        salesHistory.innerHTML = "";
+
+        data.sales.forEach((sale) => {
+
+            const saleRow = document.createElement("div");
+
+            saleRow.className = "sale-history-row";
+
+            saleRow.innerHTML = `
+                <strong>Sale #${sale.sale_id}</strong>
+                <span>${sale.product_name || "Product"}</span>
+                <span>Qty: ${sale.quantity}</span>
+                <span>€${Number(sale.line_total).toFixed(2)}</span>
+                <span>Profit: €${Number(sale.profit).toFixed(2)}</span>
+            `;
+
+            salesHistory.appendChild(saleRow);
+        });
+
+    } catch (error) {
+
+        console.error("Error loading sales history:", error);
+
+        salesHistory.innerHTML =
+            "<p>Unable to connect to the Business Decision API.</p>";
+    }
+}
+
+
+// Load sales history when page loads
+loadSalesHistory();
