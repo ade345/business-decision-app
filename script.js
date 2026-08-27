@@ -27,3 +27,24 @@ navItems.forEach((item) => {
         }
     });
 });
+
+
+// SALE TOTAL CALCULATION
+
+const quantityInput = document.getElementById("quantity");
+const unitPriceInput = document.getElementById("unit-price");
+const saleTotal = document.getElementById("sale-total");
+
+function calculateSaleTotal() {
+    const quantity = parseFloat(quantityInput.value) || 0;
+    const unitPrice = parseFloat(unitPriceInput.value) || 0;
+
+    const total = quantity * unitPrice;
+
+    saleTotal.textContent = `€${total.toFixed(2)}`;
+}
+
+if (quantityInput && unitPriceInput) {
+    quantityInput.addEventListener("input", calculateSaleTotal);
+    unitPriceInput.addEventListener("input", calculateSaleTotal);
+}
