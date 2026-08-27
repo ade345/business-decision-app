@@ -48,3 +48,5 @@ if (quantityInput && unitPriceInput) {
     quantityInput.addEventListener("input", calculateSaleTotal);
     unitPriceInput.addEventListener("input", calculateSaleTotal);
 }
+
+Fix sale total calculation
