@@ -300,12 +300,82 @@ async function loadSalesHistory() {
 
         const data = await response.json();
 
-        if (!data.success) {
-            salesHistory.innerHTML =
-                "<p>Failed to load sales.</p>";
-            return;
-        }
 
+
+if (!data.success) {
+    salesHistory.innerHTML =
+        "<p>Failed to load sales.</p>";
+    return;
+}
+
+
+// ================================
+// UPDATE SALES OVERVIEW
+// ================================
+
+const salesCount = document.getElementById("sales-count");
+const salesRevenue = document.getElementById("sales-revenue");
+const salesProfit = document.getElementById("sales-profit");
+const salesAverage = document.getElementById("sales-average");
+
+const uniqueSales = {};
+
+data.sales.forEach((sale) => {
+
+    if (!uniqueSales[sale.sale_id]) {
+
+        uniqueSales[sale.sale_id] = {
+            total_amount: Number(sale.total_amount || 0),
+            profit: Number(sale.profit || 0)
+        };
+
+    } else {
+
+        uniqueSales[sale.sale_id].profit +=
+            Number(sale.profit || 0);
+
+    }
+});
+
+const salesList = Object.values(uniqueSales);
+
+const totalSales = salesList.length;
+
+const totalRevenue = salesList.reduce(
+    (sum, sale) => sum + sale.total_amount,
+    0
+);
+
+const totalProfit = salesList.reduce(
+    (sum, sale) => sum + sale.profit,
+    0
+);
+
+const averageSale =
+    totalSales > 0
+        ? totalRevenue / totalSales
+        : 0;
+
+if (salesCount) {
+    salesCount.textContent = totalSales;
+}
+
+if (salesRevenue) {
+    salesRevenue.textContent =
+        `€${totalRevenue.toFixed(2)}`;
+}
+
+if (salesProfit) {
+    salesProfit.textContent =
+        `€${totalProfit.toFixed(2)}`;
+}
+
+if (salesAverage) {
+    salesAverage.textContent =
+        `€${averageSale.toFixed(2)}`;
+}
+       
+        
         if (data.sales.length === 0) {
             salesHistory.innerHTML =
                 "<p>No sales recorded yet.</p>";
