@@ -312,28 +312,143 @@ async function loadSalesHistory() {
             return;
         }
 
-        salesHistory.innerHTML = "";
+        // Group products by sale
+        const groupedSales = {};
 
         data.sales.forEach((sale) => {
 
-            const saleRow = document.createElement("div");
+            if (!groupedSales[sale.sale_id]) {
 
-            saleRow.className = "sale-history-row";
+                groupedSales[sale.sale_id] = {
+                    sale_id: sale.sale_id,
+                    sale_date: sale.sale_date,
+                    customer_name: sale.customer_name,
+                    payment_method: sale.payment_method,
+                    payment_status: sale.payment_status,
+                    total_amount: Number(sale.total_amount),
+                    amount_paid: Number(sale.amount_paid),
+                    notes: sale.notes,
+                    products: [],
+                    total_profit: 0
+                };
+            }
 
-            saleRow.innerHTML = `
-                <strong>Sale #${sale.sale_id}</strong>
-                <span>${sale.product_name || "Product"}</span>
-                <span>Qty: ${sale.quantity}</span>
-                <span>€${Number(sale.line_total).toFixed(2)}</span>
-                <span>Profit: €${Number(sale.profit).toFixed(2)}</span>
+            groupedSales[sale.sale_id].products.push({
+                product_name: sale.product_name || "Product",
+                quantity: Number(sale.quantity),
+                unit_price: Number(sale.unit_price),
+                line_total: Number(sale.line_total),
+                profit: Number(sale.profit)
+            });
+
+            groupedSales[sale.sale_id].total_profit +=
+                Number(sale.profit);
+        });
+
+
+        salesHistory.innerHTML = "";
+
+
+        Object.values(groupedSales).forEach((sale) => {
+
+            const saleCard = document.createElement("div");
+
+            saleCard.className = "sale-history-card";
+
+
+            const date = new Date(sale.sale_date);
+
+            const formattedDate =
+                date.toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric"
+                });
+
+
+            let productsHTML = "";
+
+            sale.products.forEach((product) => {
+
+                productsHTML += `
+                    <div class="sale-product-row">
+
+                        <span>
+                            ${product.product_name}
+                        </span>
+
+                        <span>
+                            Qty: ${product.quantity}
+                        </span>
+
+                        <span>
+                            €${product.line_total.toFixed(2)}
+                        </span>
+
+                    </div>
+                `;
+            });
+
+
+            saleCard.innerHTML = `
+
+                <div class="sale-history-header">
+
+                    <strong>
+                        Sale #${sale.sale_id}
+                    </strong>
+
+                    <span>
+                        ${formattedDate}
+                    </span>
+
+                    <span>
+                        ${sale.payment_status}
+                    </span>
+
+                </div>
+
+
+                <div class="sale-customer">
+
+                    Customer:
+                    ${sale.customer_name || "Walk-in Customer"}
+
+                </div>
+
+
+                <div class="sale-products">
+
+                    ${productsHTML}
+
+                </div>
+
+
+                <div class="sale-history-footer">
+
+                    <strong>
+                        Total: €${sale.total_amount.toFixed(2)}
+                    </strong>
+
+                    <strong>
+                        Profit: €${sale.total_profit.toFixed(2)}
+                    </strong>
+
+                </div>
+
             `;
 
-            salesHistory.appendChild(saleRow);
+
+            salesHistory.appendChild(saleCard);
+
         });
 
     } catch (error) {
 
-        console.error("Error loading sales history:", error);
+        console.error(
+            "Error loading sales history:",
+            error
+        );
 
         salesHistory.innerHTML =
             "<p>Unable to connect to the Business Decision API.</p>";
