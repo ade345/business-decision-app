@@ -528,3 +528,86 @@ if (salesAverage) {
 
 // Load sales history when page loads
 loadSalesHistory();
+
+// ================================
+// UPDATE DASHBOARD
+// ================================
+
+async function loadDashboardMetrics() {
+
+    try {
+
+        const response = await fetch(
+            "http://localhost:3000/api/sales"
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+            return;
+        }
+
+        // Group sales by sale_id
+        const dashboardSales = {};
+
+        data.sales.forEach((sale) => {
+
+            if (!dashboardSales[sale.sale_id]) {
+
+                dashboardSales[sale.sale_id] = {
+                    total_amount: Number(sale.total_amount || 0),
+                    profit: Number(sale.profit || 0)
+                };
+
+            } else {
+
+                dashboardSales[sale.sale_id].profit +=
+                    Number(sale.profit || 0);
+            }
+        });
+
+        const salesList =
+            Object.values(dashboardSales);
+
+        const revenue = salesList.reduce(
+            (sum, sale) =>
+                sum + sale.total_amount,
+            0
+        );
+
+        const profit = salesList.reduce(
+            (sum, sale) =>
+                sum + sale.profit,
+            0
+        );
+
+        // Update Dashboard Revenue
+        const dashboardRevenue =
+            document.getElementById("dashboard-revenue");
+
+        if (dashboardRevenue) {
+            dashboardRevenue.textContent =
+                `€${revenue.toFixed(2)}`;
+        }
+
+        // Update Dashboard Profit
+        const dashboardProfit =
+            document.getElementById("dashboard-profit");
+
+        if (dashboardProfit) {
+            dashboardProfit.textContent =
+                `€${profit.toFixed(2)}`;
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Error loading dashboard metrics:",
+            error
+        );
+    }
+}
+
+
+// Load Dashboard metrics
+loadDashboardMetrics();
