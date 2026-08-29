@@ -538,65 +538,66 @@ async function loadDashboardMetrics() {
     try {
 
         const response = await fetch(
-            "http://localhost:3000/api/sales"
+            "http://localhost:3000/api/dashboard/financials"
         );
 
         const data = await response.json();
 
         if (!data.success) {
+            console.error(
+                "Failed to load dashboard financials"
+            );
             return;
         }
 
-        // Group sales by sale_id
-        const dashboardSales = {};
+        const financials = data.financials;
 
-        data.sales.forEach((sale) => {
 
-            if (!dashboardSales[sale.sale_id]) {
+        // ================================
+        // UPDATE NET CASH MOVEMENT
+        // ================================
 
-                dashboardSales[sale.sale_id] = {
-                    total_amount: Number(sale.total_amount || 0),
-                    profit: Number(sale.profit || 0)
-                };
+        const dashboardCash =
+            document.getElementById("dashboard-cash");
 
-            } else {
+        if (dashboardCash) {
 
-                dashboardSales[sale.sale_id].profit +=
-                    Number(sale.profit || 0);
-            }
-        });
+            const cashMovement =
+                Number(financials.net_cash_movement || 0);
 
-        const salesList =
-            Object.values(dashboardSales);
+            dashboardCash.textContent =
+                `${cashMovement < 0 ? "-" : ""}€${Math.abs(cashMovement).toFixed(2)}`;
 
-        const revenue = salesList.reduce(
-            (sum, sale) =>
-                sum + sale.total_amount,
-            0
-        );
+        }
 
-        const profit = salesList.reduce(
-            (sum, sale) =>
-                sum + sale.profit,
-            0
-        );
 
-        // Update Dashboard Revenue
+        // ================================
+        // UPDATE DASHBOARD REVENUE
+        // ================================
+
         const dashboardRevenue =
             document.getElementById("dashboard-revenue");
 
         if (dashboardRevenue) {
+
             dashboardRevenue.textContent =
-                `€${revenue.toFixed(2)}`;
+                `€${Number(financials.revenue || 0).toFixed(2)}`;
+
         }
 
-        // Update Dashboard Profit
+
+        // ================================
+        // UPDATE DASHBOARD OPERATING PROFIT
+        // ================================
+
         const dashboardProfit =
             document.getElementById("dashboard-profit");
 
         if (dashboardProfit) {
+
             dashboardProfit.textContent =
-                `€${profit.toFixed(2)}`;
+                `€${Number(financials.operating_profit || 0).toFixed(2)}`;
+
         }
 
     } catch (error) {
@@ -605,9 +606,14 @@ async function loadDashboardMetrics() {
             "Error loading dashboard metrics:",
             error
         );
+
     }
+
 }
 
 
-// Load Dashboard metrics
+// ================================
+// LOAD DASHBOARD METRICS
+// ================================
+
 loadDashboardMetrics();
