@@ -752,6 +752,118 @@ if (kpiData.success) {
 
     }
 }
+        // ================================
+// UPDATE ALERTS & RECOMMENDATIONS
+// ================================
+
+const cashAlert =
+    document.getElementById("cash-alert");
+
+const cashAlertTitle =
+    document.getElementById("cash-alert-title");
+
+const cashAlertMessage =
+    document.getElementById("cash-alert-message");
+
+const inventoryAlert =
+    document.getElementById("inventory-alert");
+
+const inventoryAlertTitle =
+    document.getElementById("inventory-alert-title");
+
+const inventoryAlertMessage =
+    document.getElementById("inventory-alert-message");
+
+const productAlert =
+    document.getElementById("product-alert");
+
+const productAlertTitle =
+    document.getElementById("product-alert-title");
+
+const productAlertMessage =
+    document.getElementById("product-alert-message");
+
+
+if (kpiData.success) {
+
+    // CASH ALERT
+
+    const cashMovement =
+        Number(kpiData.kpis.net_cash_movement || 0);
+
+    if (cashAlert && cashAlertTitle && cashAlertMessage) {
+
+        if (cashMovement < 0) {
+
+            cashAlertTitle.textContent =
+                "Cash Alert";
+
+            cashAlertMessage.textContent =
+                `Net cash movement is negative at €${Math.abs(cashMovement).toFixed(2)}. Management should investigate cash outflows and working capital.`;
+
+        } else {
+
+            cashAlertTitle.textContent =
+                "Cash Position";
+
+            cashAlertMessage.textContent =
+                `Net cash movement is positive at €${cashMovement.toFixed(2)}.`;
+
+        }
+    }
+
+
+    // INVENTORY ALERT
+
+    const highStock =
+        Number(kpiData.kpis.high_stock_percentage || 0);
+
+    if (
+        inventoryAlert &&
+        inventoryAlertTitle &&
+        inventoryAlertMessage
+    ) {
+
+        if (highStock > 30) {
+
+            inventoryAlertTitle.textContent =
+                "Inventory Alert";
+
+            inventoryAlertMessage.textContent =
+                `${highStock.toFixed(1)}% of inventory is classified as high stock. Review high-stock products before making new purchases.`;
+
+        } else {
+
+            inventoryAlertTitle.textContent =
+                "Inventory Status";
+
+            inventoryAlertMessage.textContent =
+                "Inventory levels are currently within a manageable range.";
+
+        }
+    }
+
+
+    // PRODUCT OPPORTUNITY
+
+    const topProduct =
+        kpiData.kpis.top_profit_product ||
+        "No product identified";
+
+    if (
+        productAlert &&
+        productAlertTitle &&
+        productAlertMessage
+    ) {
+
+        productAlertTitle.textContent =
+            "Product Opportunity";
+
+        productAlertMessage.textContent =
+            `${topProduct} is currently the top profit-performing product. Monitor its sales and margin performance.`;
+
+    }
+}
 } catch (error) {
         console.error(
             "Error loading dashboard metrics:",
