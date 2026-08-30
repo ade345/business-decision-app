@@ -662,6 +662,96 @@ if (healthStatus && kpiData.success) {
         ).replace(/_/g, " ");
 
 }
+        // ================================
+// UPDATE DECISION SUMMARY
+// ================================
+
+const cashTitle =
+    document.getElementById("decision-cash-title");
+
+const cashMessage =
+    document.getElementById("decision-cash-message");
+
+const inventoryTitle =
+    document.getElementById("decision-inventory-title");
+
+const inventoryMessage =
+    document.getElementById("decision-inventory-message");
+
+const productTitle =
+    document.getElementById("decision-product-title");
+
+const productMessage =
+    document.getElementById("decision-product-message");
+
+
+if (kpiData.success) {
+
+    // CASH DECISION
+
+    if (cashTitle && cashMessage) {
+
+        const cashMovement =
+            Number(kpiData.kpis.net_cash_movement || 0);
+
+        if (cashMovement < 0) {
+
+            cashTitle.textContent = "Cash Pressure";
+
+            cashMessage.textContent =
+                "Net cash movement is negative. Management should investigate cash outflows and working capital.";
+
+        } else {
+
+            cashTitle.textContent = "Cash Position";
+
+            cashMessage.textContent =
+                "Cash movement is positive. Continue monitoring inflows and outflows.";
+
+        }
+    }
+
+
+    // INVENTORY DECISION
+
+    if (inventoryTitle && inventoryMessage) {
+
+        const highStock =
+            Number(kpiData.kpis.high_stock_percentage || 0);
+
+        if (highStock > 30) {
+
+            inventoryTitle.textContent = "Inventory Attention";
+
+            inventoryMessage.textContent =
+                `${highStock.toFixed(1)}% of inventory is classified as high stock. Review high-stock products before making new purchases.`;
+
+        } else {
+
+            inventoryTitle.textContent = "Inventory";
+
+            inventoryMessage.textContent =
+                "Inventory levels are currently within a manageable range.";
+
+        }
+    }
+
+
+    // PRODUCT DECISION
+
+    if (productTitle && productMessage) {
+
+        const topProduct =
+            kpiData.kpis.top_profit_product || "No product identified";
+
+        productTitle.textContent =
+            "Top Profit Product";
+
+        productMessage.textContent =
+            `${topProduct} is currently the top profit-performing product. Monitor its sales and margin performance.`;
+
+    }
+}
 } catch (error) {
         console.error(
             "Error loading dashboard metrics:",
