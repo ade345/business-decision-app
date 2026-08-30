@@ -646,6 +646,22 @@ if (kpiData.success) {
 
     }
 }
+
+// ================================
+// UPDATE BUSINESS HEALTH STATUS
+// ================================
+
+const healthStatus =
+    document.getElementById("business-health-status");
+
+if (healthStatus && kpiData.success) {
+
+    healthStatus.textContent =
+        String(
+            kpiData.kpis.business_health_status || "UNKNOWN"
+        ).replace(/_/g, " ");
+
+}
 } catch (error) {
         console.error(
             "Error loading dashboard metrics:",
