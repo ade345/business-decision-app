@@ -622,8 +622,8 @@ if (inventoryData.success) {
             ).toFixed(2)}`;
 
     }
-// ================================
-// UPDATE BUSINESS HEALTH SCORE
+
+}
 // ================================
 
 const kpiResponse = await fetch(
@@ -646,7 +646,7 @@ if (kpiData.success) {
 
     }
 }
-
+} catch (error) {
         console.error(
             "Error loading dashboard metrics:",
             error
