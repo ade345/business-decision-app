@@ -1288,3 +1288,299 @@ async function loadProductsPage() {
 // Load products when page loads
 
 loadProductsPage();
+
+// ================================
+// PURCHASE TOTAL CALCULATION
+// ================================
+
+const purchaseQuantityInput =
+    document.getElementById("purchase-quantity");
+
+const purchaseCostInput =
+    document.getElementById("purchase-cost");
+
+const purchaseTotal =
+    document.getElementById("purchase-total");
+
+
+function calculatePurchaseTotal() {
+
+    if (
+        !purchaseQuantityInput ||
+        !purchaseCostInput ||
+        !purchaseTotal
+    ) {
+        return;
+    }
+
+    const quantity =
+        Number(purchaseQuantityInput.value) || 0;
+
+    const unitCost =
+        Number(purchaseCostInput.value) || 0;
+
+    const total =
+        quantity * unitCost;
+
+    purchaseTotal.textContent =
+        `€${total.toFixed(2)}`;
+}
+
+
+// Recalculate quantity changes
+
+if (purchaseQuantityInput) {
+
+    purchaseQuantityInput.addEventListener(
+        "input",
+        calculatePurchaseTotal
+    );
+
+    purchaseQuantityInput.addEventListener(
+        "change",
+        calculatePurchaseTotal
+    );
+}
+
+
+// Recalculate cost changes
+
+if (purchaseCostInput) {
+
+    purchaseCostInput.addEventListener(
+        "input",
+        calculatePurchaseTotal
+    );
+
+    purchaseCostInput.addEventListener(
+        "change",
+        calculatePurchaseTotal
+    );
+}
+
+
+calculatePurchaseTotal();
+
+
+// ================================
+// RECORD PURCHASE
+// ================================
+
+const purchaseForm =
+    document.getElementById("purchase-form");
+
+
+if (purchaseForm) {
+
+    purchaseForm.addEventListener(
+        "submit",
+        async (event) => {
+
+            event.preventDefault();
+
+
+            const productId =
+                Number(
+                    document.getElementById(
+                        "purchase-product"
+                    ).value
+                );
+
+
+            const quantity =
+                Number(
+                    document.getElementById(
+                        "purchase-quantity"
+                    ).value
+                );
+
+
+            const unitCost =
+                Number(
+                    document.getElementById(
+                        "purchase-cost"
+                    ).value
+                );
+
+
+            const paymentStatus =
+                document.getElementById(
+                    "purchase-payment"
+                ).value;
+
+
+            const purchaseDate =
+                document.getElementById(
+                    "purchase-date"
+                ).value;
+
+
+            const supplier =
+                document.getElementById(
+                    "supplier"
+                ).value.trim();
+
+
+            const totalAmount =
+                quantity * unitCost;
+
+
+            // ================================
+            // VALIDATION
+            // ================================
+
+            if (!productId) {
+
+                alert("Please select a product.");
+
+                return;
+            }
+
+
+            if (!quantity || quantity <= 0) {
+
+                alert(
+                    "Please enter a valid quantity."
+                );
+
+                return;
+            }
+
+
+            if (
+                unitCost === undefined ||
+                unitCost < 0
+            ) {
+
+                alert(
+                    "Please enter a valid unit cost."
+                );
+
+                return;
+            }
+
+
+            if (!paymentStatus) {
+
+                alert(
+                    "Please select a payment method."
+                );
+
+                return;
+            }
+
+
+            // ================================
+            // PURCHASE DATA
+            // ================================
+
+            const purchaseData = {
+
+                business_id: 1,
+
+                supplier_id: null,
+
+                purchase_date:
+                    purchaseDate || null,
+
+                payment_status:
+                    paymentStatus,
+
+                total_amount:
+                    totalAmount,
+
+                amount_paid:
+                    paymentStatus === "PAID"
+                        ? totalAmount
+                        : 0,
+
+                notes:
+                    supplier
+                        ? `Supplier: ${supplier}`
+                        : null,
+
+                product_id:
+                    productId,
+
+                quantity:
+                    quantity,
+
+                unit_cost:
+                    unitCost
+            };
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "http://localhost:3000/api/purchases",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    purchaseData
+                                )
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                if (
+                    !response.ok ||
+                    !result.success
+                ) {
+
+                    alert(
+                        result.message ||
+                        "Failed to record purchase."
+                    );
+
+                    return;
+                }
+
+
+                alert(
+                    `Purchase recorded successfully!\nPurchase ID: ${result.purchase_id}\nTotal: €${Number(result.line_total).toFixed(2)}`
+                );
+
+
+                // Clear form
+
+                purchaseForm.reset();
+
+
+                // Reset total
+
+                calculatePurchaseTotal();
+
+            }
+
+
+            catch (error) {
+
+                console.error(
+                    "Error recording purchase:",
+                    error
+                );
+
+
+                alert(
+                    "Unable to connect to the Business Decision API."
+                );
+
+            }
+
+        }
+    );
+
+}
