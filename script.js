@@ -622,8 +622,30 @@ if (inventoryData.success) {
             ).toFixed(2)}`;
 
     }
+// ================================
+// UPDATE BUSINESS HEALTH SCORE
+// ================================
+
+const kpiResponse = await fetch(
+    "http://localhost:3000/api/dashboard/kpis"
+);
+
+const kpiData = await kpiResponse.json();
+
+if (kpiData.success) {
+
+    const healthScore =
+        document.getElementById("business-health-score");
+
+    if (healthScore) {
+
+        healthScore.textContent =
+            Number(
+                kpiData.kpis.business_health_score || 0
+            );
+
+    }
 }
-    } catch (error) {
 
         console.error(
             "Error loading dashboard metrics:",
