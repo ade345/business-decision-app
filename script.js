@@ -1113,4 +1113,178 @@ async function loadInventoryPage() {
 // Load inventory when page loads
 
 loadInventoryPage();
-loadProductsPage()
+// ================================
+// LOAD PRODUCTS PAGE
+// ================================
+
+async function loadProductsPage() {
+
+    const productsContainer =
+        document.getElementById("products-table-container");
+
+    if (!productsContainer) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "http://localhost:3000/api/products"
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+            productsContainer.innerHTML =
+                "<p>Failed to load products.</p>";
+            return;
+        }
+
+        const products = data.products || [];
+
+        // SUMMARY
+
+        const totalCount =
+            document.getElementById("products-total-count");
+
+        const activeCount =
+            document.getElementById("products-active-count");
+
+        const averageMargin =
+            document.getElementById("products-average-margin");
+
+        if (totalCount) {
+            totalCount.textContent = products.length;
+        }
+
+        if (activeCount) {
+            activeCount.textContent = products.length;
+        }
+
+        const margins = products.map(product => {
+
+            const cost = Number(product.cost_price || 0);
+            const selling = Number(product.selling_price || 0);
+
+            if (selling <= 0) {
+                return 0;
+            }
+
+            return ((selling - cost) / selling) * 100;
+
+        });
+
+        const avgMargin =
+            margins.length > 0
+                ? margins.reduce((sum, value) => sum + value, 0)
+                    / margins.length
+                : 0;
+
+        if (averageMargin) {
+            averageMargin.textContent =
+                `${avgMargin.toFixed(1)}%`;
+        }
+
+        // NO PRODUCTS
+
+        if (products.length === 0) {
+
+            productsContainer.innerHTML =
+                "<p>No active products found.</p>";
+
+            return;
+        }
+
+        // PRODUCT TABLE
+
+        let tableHTML = `
+
+            <table class="products-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Product</th>
+                        <th>Cost Price</th>
+                        <th>Selling Price</th>
+                        <th>Profit / Unit</th>
+                        <th>Margin</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+        `;
+
+        products.forEach(product => {
+
+            const cost =
+                Number(product.cost_price || 0);
+
+            const selling =
+                Number(product.selling_price || 0);
+
+            const profit =
+                selling - cost;
+
+            const margin =
+                selling > 0
+                    ? (profit / selling) * 100
+                    : 0;
+
+            tableHTML += `
+
+                <tr>
+
+                    <td class="product-name">
+                        ${product.product_name || "Unknown Product"}
+                    </td>
+
+                    <td>
+                        €${cost.toFixed(2)}
+                    </td>
+
+                    <td>
+                        €${selling.toFixed(2)}
+                    </td>
+
+                    <td>
+                        €${profit.toFixed(2)}
+                    </td>
+
+                    <td class="product-margin">
+                        ${margin.toFixed(1)}%
+                    </td>
+
+                </tr>
+
+            `;
+        });
+
+        tableHTML += `
+
+                </tbody>
+
+            </table>
+
+        `;
+
+        productsContainer.innerHTML =
+            tableHTML;
+
+    } catch (error) {
+
+        console.error(
+            "Error loading products:",
+            error
+        );
+
+        productsContainer.innerHTML =
+            "<p>Unable to connect to the Business Decision API.</p>";
+    }
+}
+
+
+// Load products when page loads
+
+loadProductsPage();
