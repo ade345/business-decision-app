@@ -880,3 +880,68 @@ if (kpiData.success) {
 // ================================
 
 loadDashboardMetrics();
+
+// ================================
+// LOAD INVENTORY PAGE
+// ================================
+
+async function loadInventoryPage() {
+
+    const inventoryContainer =
+        document.getElementById("inventory-table-container");
+
+    if (!inventoryContainer) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "http://localhost:3000/api/dashboard/inventory"
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+            inventoryContainer.innerHTML =
+                "<p>Failed to load inventory data.</p>";
+            return;
+        }
+
+        const inventory = data.inventory;
+
+        // TOTAL INVENTORY VALUE
+
+        const totalValue =
+            document.getElementById("inventory-total-value");
+
+        if (totalValue) {
+            totalValue.textContent =
+                `€${Number(inventory.inventory_value || 0).toFixed(2)}`;
+        }
+
+        // For now, display the inventory value returned by the API.
+        // The detailed product table will be connected next.
+
+        inventoryContainer.innerHTML = `
+            <div class="inventory-loading">
+                Inventory data connected successfully.
+            </div>
+        `;
+
+    } catch (error) {
+
+        console.error(
+            "Error loading inventory:",
+            error
+        );
+
+        inventoryContainer.innerHTML =
+            "<p>Unable to connect to the Business Decision API.</p>";
+    }
+}
+
+
+// Load inventory when page loads
+
+loadInventoryPage();
