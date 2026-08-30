@@ -885,6 +885,10 @@ loadDashboardMetrics();
 // LOAD INVENTORY PAGE
 // ================================
 
+// ================================
+// LOAD INVENTORY PAGE
+// ================================
+
 async function loadInventoryPage() {
 
     const inventoryContainer =
@@ -897,7 +901,7 @@ async function loadInventoryPage() {
     try {
 
         const response = await fetch(
-            "http://localhost:3000/api/dashboard/inventory"
+            "http://localhost:3000/api/dashboard/inventory/details"
         );
 
         const data = await response.json();
@@ -908,26 +912,190 @@ async function loadInventoryPage() {
             return;
         }
 
-        const inventory = data.inventory;
+        const inventory = data.inventory || [];
 
-        // TOTAL INVENTORY VALUE
+        // ================================
+        // UPDATE INVENTORY SUMMARY
+        // ================================
 
         const totalValue =
             document.getElementById("inventory-total-value");
 
+        const productCount =
+            document.getElementById("inventory-product-count");
+
+        const highStock =
+            document.getElementById("inventory-high-stock");
+
+
+        const totalInventoryValue = inventory.reduce(
+            (sum, product) =>
+                sum + Number(product.inventory_value || 0),
+            0
+        );
+
+
+        const highStockCount = inventory.filter(
+            product =>
+                String(product.stock_status || "").toUpperCase()
+                === "HIGH_STOCK"
+        ).length;
+
+
+        const highStockPercentage =
+            inventory.length > 0
+                ? (highStockCount / inventory.length) * 100
+                : 0;
+
+
         if (totalValue) {
             totalValue.textContent =
-                `€${Number(inventory.inventory_value || 0).toFixed(2)}`;
+                `€${totalInventoryValue.toFixed(2)}`;
         }
 
-        // For now, display the inventory value returned by the API.
-        // The detailed product table will be connected next.
 
-        inventoryContainer.innerHTML = `
-            <div class="inventory-loading">
-                Inventory data connected successfully.
-            </div>
+        if (productCount) {
+            productCount.textContent =
+                inventory.length;
+        }
+
+
+        if (highStock) {
+            highStock.textContent =
+                `${highStockPercentage.toFixed(1)}%`;
+        }
+
+
+        // ================================
+        // NO PRODUCTS
+        // ================================
+
+        if (inventory.length === 0) {
+
+            inventoryContainer.innerHTML =
+                "<p>No inventory products found.</p>";
+
+            return;
+        }
+
+
+        // ================================
+        // BUILD INVENTORY TABLE
+        // ================================
+
+        let tableHTML = `
+
+            <table class="inventory-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Product</th>
+                        <th>SKU</th>
+                        <th>Stock</th>
+                        <th>Minimum</th>
+                        <th>Inventory Value</th>
+                        <th>Units Sold</th>
+                        <th>Revenue</th>
+                        <th>Gross Profit</th>
+                        <th>Margin</th>
+                        <th>Status</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
         `;
+
+
+        inventory.forEach((product) => {
+
+            const status =
+                String(product.stock_status || "")
+                    .toUpperCase();
+
+
+            let statusClass = "ok";
+
+            if (status === "HIGH_STOCK") {
+                statusClass = "high";
+            }
+
+            if (
+                status === "LOW_STOCK" ||
+                status === "OUT_OF_STOCK"
+            ) {
+                statusClass = "low";
+            }
+
+
+            tableHTML += `
+
+                <tr>
+
+                    <td class="inventory-product-name">
+                        ${product.product_name || "Unknown Product"}
+                    </td>
+
+                    <td>
+                        ${product.sku || "-"}
+                    </td>
+
+                    <td>
+                        ${Number(product.current_stock || 0).toFixed(0)}
+                    </td>
+
+                    <td>
+                        ${Number(product.minimum_stock || 0).toFixed(0)}
+                    </td>
+
+                    <td>
+                        €${Number(product.inventory_value || 0).toFixed(2)}
+                    </td>
+
+                    <td>
+                        ${Number(product.units_sold || 0).toFixed(0)}
+                    </td>
+
+                    <td>
+                        €${Number(product.revenue || 0).toFixed(2)}
+                    </td>
+
+                    <td>
+                        €${Number(product.gross_profit || 0).toFixed(2)}
+                    </td>
+
+                    <td>
+                        ${product.gross_margin_percentage !== null
+                            ? Number(product.gross_margin_percentage).toFixed(1) + "%"
+                            : "-"
+                        }
+                    </td>
+
+                    <td>
+                        <span class="inventory-status ${statusClass}">
+                            ${status.replace(/_/g, " ")}
+                        </span>
+                    </td>
+
+                </tr>
+
+            `;
+        });
+
+
+        tableHTML += `
+
+                </tbody>
+
+            </table>
+
+        `;
+
+
+        inventoryContainer.innerHTML =
+            tableHTML;
+
 
     } catch (error) {
 
