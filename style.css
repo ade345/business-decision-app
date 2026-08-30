@@ -705,3 +705,29 @@ nav {
     }
 
 }
+
+/* ================================
+   RECOMMENDED ACTION
+================================ */
+
+.alert-action {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid #e5e7eb;
+    font-size: 14px;
+    font-weight: 600;
+    color: #172033;
+    line-height: 1.5;
+}
+
+#cash-alert .alert-action {
+    color: #b91c1c;
+}
+
+#inventory-alert .alert-action {
+    color: #b45309;
+}
+
+#product-alert .alert-action {
+    color: #15803d;
+}
