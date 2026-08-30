@@ -599,7 +599,30 @@ async function loadDashboardMetrics() {
                 `€${Number(financials.operating_profit || 0).toFixed(2)}`;
 
         }
+// ================================
+// UPDATE INVENTORY VALUE
+// ================================
 
+const inventoryResponse = await fetch(
+    "http://localhost:3000/api/dashboard/inventory"
+);
+
+const inventoryData = await inventoryResponse.json();
+
+if (inventoryData.success) {
+
+    const dashboardInventory =
+        document.getElementById("dashboard-inventory");
+
+    if (dashboardInventory) {
+
+        dashboardInventory.textContent =
+            `€${Number(
+                inventoryData.inventory.inventory_value || 0
+            ).toFixed(2)}`;
+
+    }
+}
     } catch (error) {
 
         console.error(
