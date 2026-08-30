@@ -1113,3 +1113,4 @@ async function loadInventoryPage() {
 // Load inventory when page loads
 
 loadInventoryPage();
+loadProductsPage()
